@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Vimeo Slide Show</title>
+	<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+	<script src="http://a.vimeocdn.com/js/froogaloop2.min.js"></script>   
+</head>
+<body>
+	<div class="reveal">
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" id="SLIDES">
+		</div>
+	</div>
+	<script>
+		var videos = [142659744,142659745, 140448032, 142659744];
+		var div = document.getElementById('SLIDES');
+
+		for (i = 0; i < videos.length; i++) { 
+			sec = document.createElement("section");
+			ifrm = document.createElement("IFRAME");
+			ifrm.setAttribute("src", "https://player.vimeo.com/video/"+videos[i]+"?byline=0&portrait=0&player_id=player"+i);
+			ifrm.setAttribute("class","vimeo");
+			ifrm.setAttribute("id","player"+i);
+			ifrm.style.width = 1200+"px";
+			ifrm.style.height = 700+"px";
+			sec.appendChild(ifrm);
+			div.appendChild(sec);
+		};
+
+		Reveal.initialize({
+			controls: true,
+			center: true,
+			loop: true,
+			width: 1300,
+			height: 700,
+			transition: 'fade', // none/fade/slide/convex/concave/zoom
+		});
+
+		jQuery(document).ready(function() {
+	     	// Enable the API on each Vimeo video
+	     	jQuery('iframe.vimeo').each(function(){
+	     		Froogaloop(this).addEvent('ready', ready);
+	     	});
+	     	function ready(playerID){
+	     		Froogaloop(playerID).addEvent('finish', onFinish);
+	     	}
+	     	function onFinish(id) {
+	     		Reveal.right();
+	     	}
+     	});
+
+		var vimeoPlayers = jQuery('iframe.vimeo')
+		Reveal.addEventListener( 'slidechanged', function( event ) {
+			var state = Reveal.getState();
+			Froogaloop(vimeoPlayers[state.indexh]).api('play');
+		} );
+		Reveal.configure({
+			keyboard: {
+				37: function() {
+					var state = Reveal.getState();
+					Froogaloop(vimeoPlayers[state.indexh]).api('pause');
+					Reveal.left();
+				},
+				39: function() {
+					var state = Reveal.getState();
+					Froogaloop(vimeoPlayers[state.indexh]).api('pause');
+					Reveal.right();
+				}
+			}
+		});
+		
+	</script>
+</body>
+</html>
